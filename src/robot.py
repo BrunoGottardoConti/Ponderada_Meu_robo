@@ -3,7 +3,7 @@ import dobotJson
 import pydobot
 
 
-class Robot:
+class robot:
     def __init__(self):
         self.device = pydobot.Dobot(port=scanport.scanport())
         self._update_pose()
