@@ -3,7 +3,15 @@ import inquirer
 
 def scanport():
     available_ports = list_ports.comports()
-    porta_escolhida = inquirer.prompt([
-        inquirer.List("porta", message="Escolha a porta serial", choices=[x.device for x in available_ports])
-    ])["porta"]
-    return porta_escolhida
+    port_choices = [port.device for port in available_ports]
+    if not port_choices: 
+        print("Nenhuma porta serial encontrada.")
+        return None
+    question = [
+        inquirer.List("port", message = "Escolha uma porta serial", choices = port_choices)
+    ]
+    selected_port = inquirer.prompt(question)["port"]
+    return selected_port
+
+if __name__ == "__main__":
+    print(scanport())

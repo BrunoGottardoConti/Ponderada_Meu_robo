@@ -1,23 +1,34 @@
 import json
 
-def makeJson(name,x,y,z,r,j1,j2,j3,j4,mode,actuator):
-    data = {}
-    data['x'] = x
-    data['y'] = y
-    data['z'] = z
-    data['r'] = r
-    data['j1'] = j1
-    data['j2'] = j2
-    data['j3'] = j3
-    data['j4'] = j4
-    data['mode'] = mode
-    data['actuator'] = actuator
+def makeJson(name, x, y, z, r, j1, j2, j3, j4, mode, actuator):
+    data = {
+        'x': x,
+        'y': y,
+        'z': z,
+        'r': r,
+        'j1': j1,
+        'j2': j2,
+        'j3': j3,
+        'j4': j4,
+        'mode': mode,
+        'actuator': actuator
+    }
     with open(f'{name}.json', 'w') as file:
-        json.dump(data, file)
-    print('Json file created')
-    return data
+        json.dump(data, file, indent=4)
+    print(f'JSON file "{name}.json" created.')
 
 def readJson(name):
-    with open(f'{name}.json', 'r') as file:
-        data = json.load(file)
-    return data
+    try:
+        with open(f'{name}.json', 'r') as file:
+            data = json.load(file)
+        return data
+    except FileNotFoundError:
+        print(f'Error: File "{name}.json" not found.')
+        return {}
+
+if __name__ == "__main__":
+    makeJson('test_position', 250, 0, 150, 0, 1, 2, 3, 4, 'linear', 'on')
+    position_data = readJson('test_position')
+    print(position_data)
+
+
