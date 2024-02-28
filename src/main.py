@@ -15,12 +15,12 @@ def execute_command(action, direction=None, distance=None, filename=None):
         if direction in movements:
             movements[direction]()
         else:
-            print("Invalid direction.")
+            print("direção invalida")
     elif action == "moveToFilePosition":
         if filename:
             robo.moveToPositionFromFile(filename)
         else:
-            print("No filename specified.")
+            print("Nome não especificado.")
     elif action == "ligar":
         robo.actuatorOn()
     elif action == "desligar":
@@ -31,9 +31,9 @@ def execute_command(action, direction=None, distance=None, filename=None):
         if filename:
             robo.setposition(filename)
         else:
-            print("Filename not specified.")
+            print("Nome não especificado.")
     else:
-        print("Unknown command.")
+        print("Comando desconhecido")
 
 def ask_for_action():
     questions = [
@@ -46,8 +46,8 @@ def ask_for_action():
 
 def ask_for_movement_args():
     questions = [
-        inquirer.List('direction', message="Which direction?", choices=['x', 'y', 'z', 'r']),
-        inquirer.Text('distance', message="What distance?"),
+        inquirer.List('direction', message="Escolha uma direção", choices=['x', 'y', 'z', 'r']),
+        inquirer.Text('distance', message="Digite a distancia"),
     ]
     answers = inquirer.prompt(questions)
     return answers['direction'], answers['distance']

@@ -15,7 +15,7 @@ def makeJson(name, x, y, z, r, j1, j2, j3, j4, mode, actuator):
     }
     with open(f'{name}.json', 'w') as file:
         json.dump(data, file, indent=4)
-    print(f'JSON file "{name}.json" created.')
+    print(f'JSON file "{name}.json" criada.')
 
 def readJson(name):
     try:
@@ -25,10 +25,4 @@ def readJson(name):
     except FileNotFoundError:
         print(f'Error: File "{name}.json" not found.')
         return {}
-
-if __name__ == "__main__":
-    makeJson('test_position', 250, 0, 150, 0, 1, 2, 3, 4, 'linear', 'on')
-    position_data = readJson('test_position')
-    print(position_data)
-
 

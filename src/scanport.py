@@ -12,6 +12,3 @@ def scanport():
     ]
     selected_port = inquirer.prompt(question)["port"]
     return selected_port
-
-if __name__ == "__main__":
-    print(scanport())
