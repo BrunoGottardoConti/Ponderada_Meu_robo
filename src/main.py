@@ -39,7 +39,7 @@ def ask_for_action():
     questions = [
         inquirer.List('action',
                       message="Escolha um comando",
-                      choices=['moveToFilePosition', 'ligar', 'desligar', 'mover', 'atual', 'savePosition']),
+                      choices=['executeTask', 'moveToFilePosition', 'ligar', 'desligar', 'mover', 'atual', 'savePosition']),
     ]
     answers = inquirer.prompt(questions)
     return answers['action']
@@ -64,7 +64,10 @@ def ask_for_filenames():
 def main():
     while True:
         action = ask_for_action()
-        if action == 'mover':
+        if action == 'executeTask':
+            task_name = input("Enter the task name (directory): ")
+            robo.executeTask(task_name)
+        elif action == 'mover':
             direction, distance = ask_for_movement_args()
             execute_command(action, direction=direction, distance=distance)
         elif action == 'moveToFilePosition':

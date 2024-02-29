@@ -1,6 +1,7 @@
 import scanport
 import dobotJson
 import pydobot
+import os
 
 class Robot:
     def __init__(self):
@@ -45,7 +46,14 @@ class Robot:
             else:
                 print(f"Failed to move to: file {filename}.json not found.")
 
-
+    def executeTask(self, task_name):
+            task_directory = f"./{task_name}"  # Assuming task directories are in the current working directory
+            if os.path.exists(task_directory) and os.path.isdir(task_directory):
+                filenames = [f for f in os.listdir(task_directory) if f.endswith('.json')]
+                filenames.sort()  # Optional: sort the filenames if order matters
+                self.moveToPositionFromFiles([os.path.join(task_directory, filename) for filename in filenames])
+            else:
+                print(f"Task directory {task_directory} not found.")
 
     def setposition(self, filename='home'):
         self._update_pose()
