@@ -4,7 +4,7 @@ import inquirer
 # Initialize the Robot instance
 robo = Robot()
 
-def execute_command(action, direction=None, distance=None, filename=None):
+def execute_command(action, direction=None, distance=None, filenames=None):
     if action == "mover":
         movements = {
             'x': lambda: robo.moveX(float(distance)),
@@ -15,12 +15,12 @@ def execute_command(action, direction=None, distance=None, filename=None):
         if direction in movements:
             movements[direction]()
         else:
-            print("direção invalida")
+            print("Direção invalida")
     elif action == "moveToFilePosition":
-        if filename:
-            robo.moveToPositionFromFile(filename)
+        if filenames:
+            robo.moveToPositionFromFiles(filenames)
         else:
-            print("Nome não especificado.")
+            print("Filenames not specified.")
     elif action == "ligar":
         robo.actuatorOn()
     elif action == "desligar":
@@ -28,17 +28,18 @@ def execute_command(action, direction=None, distance=None, filename=None):
     elif action == "atual":
         robo.current()
     elif action == "savePosition":
-        if filename:
-            robo.setposition(filename)
+        if filenames:  # Assuming you might also modify savePosition to handle multiple files
+            for filename in filenames:
+                robo.setposition(filename)
         else:
-            print("Nome não especificado.")
+            print("Filename not specified.")
     else:
         print("Comando desconhecido")
 
 def ask_for_action():
     questions = [
         inquirer.List('action',
-                      message="Choose a command",
+                      message="Escolha um comando",
                       choices=['moveToFilePosition', 'ligar', 'desligar', 'mover', 'atual', 'savePosition']),
     ]
     answers = inquirer.prompt(questions)
@@ -46,18 +47,20 @@ def ask_for_action():
 
 def ask_for_movement_args():
     questions = [
-        inquirer.List('direction', message="Escolha uma direção", choices=['x', 'y', 'z', 'r']),
-        inquirer.Text('distance', message="Digite a distancia"),
+        inquirer.List('direction', message="Choose a direction", choices=['x', 'y', 'z', 'r']),
+        inquirer.Text('distance', message="Enter the distance"),
     ]
     answers = inquirer.prompt(questions)
     return answers['direction'], answers['distance']
 
-def ask_for_filename():
+def ask_for_filenames():
     question = [
-        inquirer.Text('filename', message="Enter filename"),
+        inquirer.Text('filenames', message="Diga o ou os arquivos separados por vírgula (,)"),
     ]
     answer = inquirer.prompt(question)
-    return answer['filename']
+    filenames = answer['filenames'].split(',')
+    filenames = [filename.strip() for filename in filenames if filename.strip()]
+    return filenames
 
 def main():
     while True:
@@ -65,11 +68,16 @@ def main():
         if action == 'mover':
             direction, distance = ask_for_movement_args()
             execute_command(action, direction=direction, distance=distance)
-        elif action in ['moveToFilePosition', 'savePosition']:
-            filename = ask_for_filename()
-            execute_command(action, filename=filename)
-        else:
+        elif action == 'moveToFilePosition':
+            filenames = ask_for_filenames()
+            execute_command(action, filenames=filenames)
+        elif action in ['ligar', 'desligar', 'atual']:
             execute_command(action)
+        elif action == 'savePosition':
+            filename = ask_for_filenames()
+            execute_command(action, filenames=filename)
+        else:
+            print("Comando desconhecido.")
 
 if __name__ == "__main__":
     main()

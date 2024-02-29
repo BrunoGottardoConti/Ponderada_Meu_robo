@@ -34,15 +34,17 @@ class Robot:
         self._update_pose()
         print("Rotacionando para:", self.r)
 
-    def moveToPositionFromFile(self, filename):
+    def moveToPositionFromFiles(self, filenames):
         self._update_pose()
-        json = dobotJson.readJson(filename)
-        if json:
-            self.device.move_to(json['x'], json['y'], json['z'], json['r'], wait=True)
-            self._update_pose()
-            print(f"Moveu para a posição de nome: {filename}.json")
-        else:
-            print(f"Falha ao mover para: file {filename}.json not found.")
+        for filename in filenames:
+            json = dobotJson.readJson(filename)
+            if json:
+                self.device.move_to(json['x'], json['y'], json['z'], json['r'], wait=True)
+                self._update_pose()
+                print(f"Moveu para a posição: {filename}.json")
+            else:
+                print(f"Failed to move to: file {filename}.json not found.")
+
 
 
     def setposition(self, filename='home'):
