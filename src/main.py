@@ -1,7 +1,6 @@
 from robot import Robot
 import inquirer
 
-# Initialize the Robot instance
 robo = Robot()
 
 def execute_command(action, direction=None, distance=None, filenames=None):
@@ -28,7 +27,7 @@ def execute_command(action, direction=None, distance=None, filenames=None):
     elif action == "atual":
         robo.current()
     elif action == "savePosition":
-        if filenames:  # Assuming you might also modify savePosition to handle multiple files
+        if filenames:
             for filename in filenames:
                 robo.setposition(filename)
         else:
