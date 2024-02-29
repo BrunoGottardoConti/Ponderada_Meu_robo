@@ -47,10 +47,10 @@ class Robot:
                 print(f"Failed to move to: file {filename}.json not found.")
 
     def executeTask(self, task_name):
-            task_directory = f"./{task_name}"  # Assuming task directories are in the current working directory
+            task_directory = f"./{task_name}" 
             if os.path.exists(task_directory) and os.path.isdir(task_directory):
                 filenames = [f for f in os.listdir(task_directory) if f.endswith('.json')]
-                filenames.sort()  # Optional: sort the filenames if order matters
+                filenames.sort()
                 self.moveToPositionFromFiles([os.path.join(task_directory, filename) for filename in filenames])
             else:
                 print(f"Task directory {task_directory} not found.")
