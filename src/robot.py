@@ -2,6 +2,7 @@ import scanport
 import dobotJson
 import pydobot
 import os
+from time import sleep
 
 class Robot:
     def __init__(self):
@@ -38,10 +39,21 @@ class Robot:
     def moveToPositionFromFiles(self, filenames):
         self._update_pose()
         for filename in filenames:
-            json = dobotJson.readJson(filename)
-            if json:
-                self.device.move_to(json['x'], json['y'], json['z'], json['r'], wait=True)
+            json_data = dobotJson.readJson(filename)
+            if json_data:
+                # Move to the position specified in the JSON
+                self.device.move_to(json_data['x'], json_data['y'], json_data['z'], json_data['r'], wait=True)
                 self._update_pose()
+                
+                # Apply the actuator mode
+                if json_data.get('actuator') == 'on':
+                    self.actuatorOn()
+                elif json_data.get('actuator') == 'off':
+                    self.actuatorOff()
+                else:
+                    print(f"No valid actuator mode found in {filename}, assuming 'off'.")
+                    self.actuatorOff()
+
                 print(f"Moved to position from: {filename}")
             else:
                 print(f"Failed to move to: file {filename} not found.")
@@ -66,6 +78,7 @@ class Robot:
 
     def actuatorOn(self):
         self.device.suck(True)
+        sleep(0.5)
         print("Atuador ligado")
 
     def actuatorOff(self):
