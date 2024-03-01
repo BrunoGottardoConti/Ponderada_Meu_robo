@@ -3,6 +3,12 @@ import dobotJson
 import pydobot
 import os
 from time import sleep
+import re
+
+def atoi(text):
+    return int(text) if text.isdigit() else text
+def natural_keys(text):
+    return [atoi(c) for c in re.split(r'(\d+)', text)]
 
 class Robot:
     def __init__(self):
@@ -64,9 +70,9 @@ class Robot:
         
         if os.path.exists(task_directory) and os.path.isdir(task_directory):
             filenames = [f for f in os.listdir(task_directory) if f.endswith('.json')]
-            filenames.sort()
+            filenames.sort(key=natural_keys)  # Use natural_keys for sorting
             filepaths = [os.path.join(task_directory, filename) for filename in filenames]
-            self.moveToPositionFromFiles(filepaths) 
+            self.moveToPositionFromFiles(filepaths)
         else:
             print(f"Task directory {task_directory} not found.")
 
@@ -78,7 +84,7 @@ class Robot:
 
     def actuatorOn(self):
         self.device.suck(True)
-        sleep(0.5)
+        sleep(0.2)
         print("Atuador ligado")
 
     def actuatorOff(self):
