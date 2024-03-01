@@ -42,18 +42,22 @@ class Robot:
             if json:
                 self.device.move_to(json['x'], json['y'], json['z'], json['r'], wait=True)
                 self._update_pose()
-                print(f"Moveu para a posição: {filename}.json")
+                print(f"Moved to position from: {filename}")
             else:
-                print(f"Failed to move to: file {filename}.json not found.")
+                print(f"Failed to move to: file {filename} not found.")
 
     def executeTask(self, task_name):
-            task_directory = f"./{task_name}" 
-            if os.path.exists(task_directory) and os.path.isdir(task_directory):
-                filenames = [f for f in os.listdir(task_directory) if f.endswith('.json')]
-                filenames.sort()
-                self.moveToPositionFromFiles([os.path.join(task_directory, filename) for filename in filenames])
-            else:
-                print(f"Task directory {task_directory} not found.")
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        task_directory = os.path.join(script_dir, task_name)
+        
+        if os.path.exists(task_directory) and os.path.isdir(task_directory):
+            filenames = [f for f in os.listdir(task_directory) if f.endswith('.json')]
+            filenames.sort()
+            filepaths = [os.path.join(task_directory, filename) for filename in filenames]
+            self.moveToPositionFromFiles(filepaths) 
+        else:
+            print(f"Task directory {task_directory} not found.")
+
 
     def setposition(self, filename='home'):
         self._update_pose()

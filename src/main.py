@@ -54,7 +54,7 @@ def ask_for_movement_args():
 
 def ask_for_filenames():
     question = [
-        inquirer.Text('filenames', message="Diga o ou os arquivos separados por vírgula (,)"),
+        inquirer.Text('filenames', message="Digite o nome do arquivo"),
     ]
     answer = inquirer.prompt(question)
     filenames = answer['filenames'].split(',')
