@@ -18,7 +18,6 @@ def makeJson(name, x, y, z, r, j1, j2, j3, j4, mode, actuator):
     print(f'JSON file "{name}.json" criada.')
 
 def readJson(name):
-    # Ensure the .json extension is only appended if not already present
     filename = f"{name}" if name.endswith('.json') else f"{name}.json"
     try:
         with open(filename, 'r') as file:

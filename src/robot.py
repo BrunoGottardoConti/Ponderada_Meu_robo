@@ -47,22 +47,19 @@ class Robot:
         for filename in filenames:
             json_data = dobotJson.readJson(filename)
             if json_data:
-                # Move to the position specified in the JSON
                 self.device.move_to(json_data['x'], json_data['y'], json_data['z'], json_data['r'], wait=True)
                 self._update_pose()
-                
-                # Apply the actuator mode
                 if json_data.get('actuator') == 'on':
                     self.actuatorOn()
                 elif json_data.get('actuator') == 'off':
                     self.actuatorOff()
                 else:
-                    print(f"No valid actuator mode found in {filename}, assuming 'off'.")
+                    print(f"Nenhum modo de atuador encontrado em {filename}, assumindo 'off'.")
                     self.actuatorOff()
 
-                print(f"Moved to position from: {filename}")
+                print(f"Moveu para: {filename}")
             else:
-                print(f"Failed to move to: file {filename} not found.")
+                print(f"Failha ao mover para: file {filename} not found.")
 
     def executeTask(self, task_name):
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -70,7 +67,7 @@ class Robot:
         
         if os.path.exists(task_directory) and os.path.isdir(task_directory):
             filenames = [f for f in os.listdir(task_directory) if f.endswith('.json')]
-            filenames.sort(key=natural_keys)  # Use natural_keys for sorting
+            filenames.sort(key=natural_keys)
             filepaths = [os.path.join(task_directory, filename) for filename in filenames]
             self.moveToPositionFromFiles(filepaths)
         else:
