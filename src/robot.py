@@ -1,47 +1,51 @@
-import scanport
-import dobotJson
-import pydobot
-import os
-from time import sleep
-import re
+import scanport  # Importa o módulo para escanear a porta de conexão
+import dobotJson  # Importa o módulo para lidar com arquivos JSON para o Dobot
+import pydobot  # Importa o módulo principal para controlar o Dobot
+import os  # Importa o módulo para interagir com o sistema operacional
+from time import sleep  # Importa a função sleep para adicionar pausas no código
+import re  # Importa o módulo para lidar com expressões regulares
 
+# Função auxiliar para converter texto em números inteiros, se possível
 def atoi(text):
     return int(text) if text.isdigit() else text
+
+# Função auxiliar para classificar uma lista mista de strings e números
 def natural_keys(text):
     return [atoi(c) for c in re.split(r'(\d+)', text)]
 
+# Classe principal para controlar o robô
 class Robot:
+    # Método de inicialização para conectar-se ao Dobot e obter a posição atual
     def __init__(self):
         self.device = pydobot.Dobot(port=scanport.scanport())
         self._update_pose()
 
+    # Método interno para atualizar a posição atual do Dobot
     def _update_pose(self):
         self.x, self.y, self.z, self.r, self.j1, self.j2, self.j3, self.j4 = self.device.pose()
 
+    # Métodos para mover o robô em cada eixo
     def moveX(self, x):
         self._update_pose()
         self.device.move_to(self.x + x, self.y, self.z, self.r, wait=True)
         self._update_pose()
-        print("Moveu para X:", self.x)
 
     def moveY(self, y):
         self._update_pose()
         self.device.move_to(self.x, self.y + y, self.z, self.r, wait=True)
         self._update_pose()
-        print("Moveu para Y:", self.y)
 
     def moveZ(self, z):
         self._update_pose()
         self.device.move_to(self.x, self.y, self.z + z, self.r, wait=True)
         self._update_pose()
-        print("Moveu para Z:", self.z)
 
     def moveR(self, r):
         self._update_pose()
         self.device.move_to(self.x, self.y, self.z, self.r + r, wait=True)
         self._update_pose()
-        print("Rotacionando para:", self.r)
 
+    # Move o robô para posições definidas em arquivos JSON
     def moveToPositionFromFiles(self, filenames):
         self._update_pose()
         for filename in filenames:
@@ -54,13 +58,11 @@ class Robot:
                 elif json_data.get('actuator') == 'off':
                     self.actuatorOff()
                 else:
-                    print(f"Nenhum modo de atuador encontrado em {filename}, assumindo 'off'.")
                     self.actuatorOff()
-
-                print(f"Moveu para: {filename}")
             else:
-                print(f"Failha ao mover para: file {filename} not found.")
+                print(f"Failed to move to: file {filename} not found.")
 
+    # Executa uma série de movimentos especificados em um diretório
     def executeTask(self, task_name):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         task_directory = os.path.join(script_dir, task_name)
@@ -73,21 +75,21 @@ class Robot:
         else:
             print(f"Task directory {task_directory} not found.")
 
-
+    # Salva a posição atual do robô em um arquivo JSON
     def setposition(self, filename='home'):
         self._update_pose()
         dobotJson.makeJson(filename, self.x, self.y, self.z, self.r, self.j1, self.j2, self.j3, self.j4, "linear", "off")
-        print(f"Posição salva como {filename}")
 
+    # Liga o atuador
     def actuatorOn(self):
         self.device.suck(True)
         sleep(0.2)
-        print("Atuador ligado")
 
+    # Desliga o atuador
     def actuatorOff(self):
         self.device.suck(False)
-        print("Atuador desligado")
 
+    # Imprime a posição atual do robô
     def current(self):
         self._update_pose() 
-        print(f"Posição atual: x={self.x}, y={self.y}, z={self.z}, r={self.r}")
+        print(f"Current position: x={self.x}, y={self.y}, z={self.z}, r={self.r}")
