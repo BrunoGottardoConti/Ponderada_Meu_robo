@@ -51,7 +51,7 @@ def ask_for_action():
     questions = [
         inquirer.List('action',
                       message="Escolha um comando",
-                      choices=['executeTask', 'Home ou outras posições', 'ligar', 'desligar', 'mover', 'atual', 'savePosition']),
+                      choices=['executeTask', 'moveToFilePosition', 'ligar', 'desligar', 'mover', 'atual', 'savePosition']),
     ]
     # Pede ao usuário que escolha uma ação
     answers = inquirer.prompt(questions)
